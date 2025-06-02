@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <h1>Lightweight Template JS</h1>
+    <div id="app"></div>
+    <footer>Some footer</footer>
+
+    <!-- Template -->
+    <template id="my-template">
+      <h2 class="{{headerclass}}">{{ title }}</h2>
+      <p class="message">{{ message }}</p>
+      <p class="message">
+        <input type="text" data-model="title" />
+      </p>
+      <button data-id="neg">-</button> {{ctr}} <button data-id="pos">+</button>
+
+      <div id="for"></div>
+    </template>
+    <template id="pandav-template">
+      <p>
+        <button data-id="toggle">Toggle Pandavas</button>
+      </p>
+      <div data-if="showPandavas">
+        <ul>
+          <li data-for="p in pandavas">{{p.name}}</li>
+        </ul>
+      </div>
+      <div data-else>
+        <p>No Pandavas to show.</p>
+      </div>
+    </template>
+    <script type="module" src="/src/index.js"></script>
+  </body>
+</html>
