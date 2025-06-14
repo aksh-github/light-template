@@ -5,15 +5,50 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      html {
+        font-size: 16px;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+      }
+      #app {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .list-item {
+        list-style-type: none;
+        padding: 0;
+        background-color: cornsilk;
+      }
+      footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #f1f1f1;
+      }
+    </style>
   </head>
   <body>
     <h1>Lightweight Template JS</h1>
     <div id="app"></div>
     <footer>Some footer</footer>
 
-    <!-- Template -->
+    <!-- Templates -->
     <template id="my-template">
-      <h2 class="{{headerclass}}">{{ title }}</h2>
+      <h2 class="{{headerclass}} list-item">{{ title }}</h2>
       <p class="message">{{ message }}</p>
       <p class="message">
         <input type="text" data-model="title" />
@@ -28,13 +63,14 @@
       </p>
       <div data-if="showPandavas">
         <ul>
-          <li data-for="p in pandavas">{{p.name}}</li>
+          <li class="list-item" data-for="p in pandavas">{{p.name}}</li>
         </ul>
       </div>
       <div data-else>
         <p>No Pandavas to show.</p>
       </div>
     </template>
+
     <script type="module" src="/src/index.js"></script>
   </body>
 </html>

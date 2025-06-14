@@ -113,7 +113,16 @@ export default class Templater {
                   original: attributeValue,
                 });
               });
-              attribute.nodeValue = this.replaceBindingsInText(attributeValue);
+              // Always use setAttribute for class
+              if (attribute.nodeName === "class") {
+                child.setAttribute(
+                  "class",
+                  this.replaceBindingsInText(attributeValue)
+                );
+              } else {
+                attribute.nodeValue =
+                  this.replaceBindingsInText(attributeValue);
+              }
             }
           });
           this.bindNodes(child);
@@ -183,34 +192,35 @@ export default class Templater {
   }
 
   updateData(newData) {
-    const changedProperties = Object.keys(newData).filter(
-      (property) => this.data[property] !== newData[property]
-    );
     Object.assign(this.data, newData);
-    if (changedProperties.length > 0) {
-      changedProperties.forEach((property) => {
-        // Handle for loop updates
-        if (this.loopBindings && this.loopBindings[property]) {
-          this.rerenderLoop(property);
+
+    // Update all text and attribute bindings with the latest data
+    Object.keys(this.boundNodes).forEach((property) => {
+      this.boundNodes[property].forEach((binding) => {
+        if (binding.type === "text") {
+          binding.node.textContent = this.replaceBindingsInText(
+            binding.original,
+            this.data
+          );
+        } else if (binding.type === "attribute") {
+          const newValue = this.replaceBindingsInText(
+            binding.original,
+            this.data
+          );
+          if (binding.attributeName === "class") {
+            // Always use setAttribute for class to preserve static and dynamic classes
+            binding.node.setAttribute("class", newValue);
+          } else {
+            binding.node.setAttribute(binding.attributeName, newValue);
+          }
         }
-        if (this.boundNodes[property]) {
-          this.boundNodes[property].forEach((binding) => {
-            if (binding.type === "text") {
-              binding.node.textContent = binding.original.replace(
-                new RegExp(`{{\\s*${property}\\s*}}`, "g"),
-                this.data[property]
-              );
-            } else if (binding.type === "attribute") {
-              binding.node.setAttribute(
-                binding.attributeName,
-                binding.original.replace(
-                  new RegExp(`{{\\s*${property}\\s*}}`, "g"),
-                  this.data[property]
-                )
-              );
-            }
-          });
-        }
+      });
+    });
+
+    // Re-render loops if needed
+    if (this.loopBindings) {
+      Object.keys(this.loopBindings).forEach((list) => {
+        this.rerenderLoop(list);
       });
     }
   }

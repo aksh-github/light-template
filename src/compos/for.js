@@ -4,7 +4,7 @@ const t = new Templater({
   template: "#pandav-template",
   elOrSelector: "#for",
   data: {
-    showPandavas: true, // Control visibility of pandavas
+    showPandavas: true,
     pandavas: [
       { name: "Yudhishthir" },
       { name: "Arjun" },
@@ -13,14 +13,14 @@ const t = new Templater({
       { name: "Sahadev" },
     ],
   },
-});
-
-t.bindEvents({
-  "[data-id='toggle']": {
-    click: function (event) {
-      console.log(t.data);
-      console.log("Toggle button clicked!");
-      t.updateData({ showPandavas: !t.data.showPandavas });
+  events: {
+    "[data-id='toggle']": {
+      click: function (event) {
+        // Toggle by negating the current value
+        this.updateData({
+          showPandavas: !this.data.showPandavas,
+        });
+      },
     },
   },
 });
