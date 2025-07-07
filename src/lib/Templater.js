@@ -150,7 +150,6 @@ export default class Templater {
   replaceBindingsInText(text, context = this.data) {
     // Support dot notation
     const bindingRegex = /{{\s*([a-zA-Z0-9_$.]+)\s*}}/g;
-    console.log("Replacing bindings in text:", text, context);
     return text.replace(bindingRegex, (match, property) => {
       const value = this.resolvePath(context, property);
       return value !== undefined ? value : "";
@@ -289,6 +288,10 @@ export default class Templater {
     });
   }
 
+  getRootElement() {
+    return this.mountedElement;
+  }
+
   mount(elOrSselector) {
     this.mountedElement =
       typeof elOrSselector === "string"
@@ -297,13 +300,18 @@ export default class Templater {
     this.mountedElement.appendChild(this.templateNode);
   }
 
-  unmount() {
-    this.removeAllEventListeners();
-    if (this.mountedElement) {
-      while (this.mountedElement.firstChild) {
-        this.mountedElement.removeChild(this.mountedElement.firstChild);
+  unmount(_node) {
+    if (!_node) this.removeAllEventListeners();
+
+    let node = _node || this.mountedElement;
+
+    if (node) {
+      while (node.firstChild) {
+        node.removeChild(node.firstChild);
       }
-      this.mountedElement = null;
+      node = null;
     }
+
+    if (!_node) this.mountedElement = null;
   }
 }
