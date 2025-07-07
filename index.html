@@ -39,20 +39,37 @@
         padding: 10px;
         background-color: #f1f1f1;
       }
+      .wc-test {
+        width: 100%;
+        height: 100px;
+        background-color: lightblue;
+        text-align: center;
+        line-height: 100px;
+        font-size: 1.2em;
+      }
+      .message {
+        color: brown;
+      }
     </style>
   </head>
   <body>
     <h1>Lightweight Template JS</h1>
     <div id="app"></div>
+
+    <div class="wc-test">This div is for web comp test</div>
+
+    <wc-dev></wc-dev>
+
     <footer>Some footer</footer>
 
     <!-- Templates -->
     <template id="my-template">
-      <h2 class="{{headerclass}} list-item">{{ title }}</h2>
+      <h2 class="{{headerclass}} list-item">Dynamic Template</h2>
       <p class="message">{{ message }}</p>
-      <p class="message">
-        <input type="text" data-model="title" />
-      </p>
+
+      <input type="text" data-model="title" />
+      <p class="message">Title: {{ title }}</p>
+
       <button data-id="neg">-</button> {{ctr}} <button data-id="pos">+</button>
 
       <div id="for"></div>

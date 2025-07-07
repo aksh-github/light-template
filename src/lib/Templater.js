@@ -150,6 +150,7 @@ export default class Templater {
   replaceBindingsInText(text, context = this.data) {
     // Support dot notation
     const bindingRegex = /{{\s*([a-zA-Z0-9_$.]+)\s*}}/g;
+    console.log("Replacing bindings in text:", text, context);
     return text.replace(bindingRegex, (match, property) => {
       const value = this.resolvePath(context, property);
       return value !== undefined ? value : "";
@@ -198,20 +199,26 @@ export default class Templater {
     Object.keys(this.boundNodes).forEach((property) => {
       this.boundNodes[property].forEach((binding) => {
         if (binding.type === "text") {
-          binding.node.textContent = this.replaceBindingsInText(
+          const newText = this.replaceBindingsInText(
             binding.original,
             this.data
           );
+          if (binding.node.textContent !== newText) {
+            binding.node.textContent = newText;
+          }
         } else if (binding.type === "attribute") {
           const newValue = this.replaceBindingsInText(
             binding.original,
             this.data
           );
           if (binding.attributeName === "class") {
-            // Always use setAttribute for class to preserve static and dynamic classes
-            binding.node.setAttribute("class", newValue);
+            if (binding.node.getAttribute("class") !== newValue) {
+              binding.node.setAttribute("class", newValue);
+            }
           } else {
-            binding.node.setAttribute(binding.attributeName, newValue);
+            if (binding.node.getAttribute(binding.attributeName) !== newValue) {
+              binding.node.setAttribute(binding.attributeName, newValue);
+            }
           }
         }
       });

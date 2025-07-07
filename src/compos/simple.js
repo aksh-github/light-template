@@ -20,6 +20,11 @@ import Templater from "../lib/Templater.js";
         console.log("Title clicked!");
       },
     },
+    input: {
+      change: function (event) {
+        templater.updateData({ title: event.target.value });
+      },
+    },
     ".message": {
       mouseover: function () {
         console.log("Message hovered!");
