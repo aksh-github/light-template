@@ -1,14 +1,17 @@
-import Templater from "../lib/Templater.js";
+import Templater from "../lib/Templater";
 
-(() => {
+export function Simple() {
   const options = {
     template: "#my-template",
-    elOrSelector: document.querySelector("#app"), // or just "#app"
+    elOrSelector: document
+      .querySelector("#app")
+      .appendChild(document.createElement("div")), // or just "#app"
     data: {
       title: "Hello World",
       message: "This is a templated message",
       headerclass: "header",
       ctr: 0,
+      msgClass: "message",
     },
   };
 
@@ -21,7 +24,7 @@ import Templater from "../lib/Templater.js";
       },
     },
     input: {
-      change: function (event) {
+      input: function (event) {
         templater.updateData({ title: event.target.value });
       },
     },
@@ -52,4 +55,4 @@ import Templater from "../lib/Templater.js";
       color: "red",
     });
   }, 3000);
-})();
+}

@@ -65,12 +65,13 @@
     <!-- Templates -->
     <template id="my-template">
       <h2 class="{{headerclass}} list-item">Dynamic Template</h2>
-      <p class="message">{{ message }}</p>
+      <p class="{{msgClass}}">{{ message }}</p>
 
       <input type="text" data-model="title" />
-      <p class="message">Title: {{ title }}</p>
+      <p class="{{msgClass}}">Title: {{ title }}</p>
 
-      <button data-id="neg">-</button> {{ctr}} <button data-id="pos">+</button>
+      <button data-id="neg">-</button> {{ctr}}
+      <button data-id="pos">+ {{ctr}}</button>
     </template>
     <div id="for"></div>
     <template id="pandav-template">
