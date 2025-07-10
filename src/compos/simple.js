@@ -2,7 +2,16 @@ import Templater from "../lib/Templater";
 
 export function Simple() {
   const options = {
-    template: "#my-template",
+    template: `<div>
+    <h2 class="{{headerclass}} list-item">Dynamic Template</h2>
+      <p class="{{msgClass}}">{{ message }}</p>
+
+      <input type="text" data-model="title" />
+      <p class="{{msgClass}}">Title: {{ title }}</p>
+
+      <button data-id="neg">-</button> {{ctr}}
+      <button data-id="pos">+ {{ctr}}</button>
+      </div>`,
     elOrSelector: document
       .querySelector("#app")
       .appendChild(document.createElement("div")), // or just "#app"

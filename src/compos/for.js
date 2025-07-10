@@ -1,7 +1,22 @@
-import Templater from "../lib/Templater";
+import { createTemplater } from "../lib/Templater";
 
-const t = new Templater({
-  template: "#pandav-template",
+const t = createTemplater({
+  // templateNode: document.querySelector("#pandav-template"),
+  template: `
+      <div>
+      <p>
+        <button data-id="toggle">Toggle Pandavas</button>
+      </p>
+      <div data-if="showPandavas">
+        <ul>
+          <li class="list-item" data-for="p in pandavas">{{p.name}}</li>
+        </ul>
+      </div>
+      <div data-else>
+        <p>No Pandavas to show.</p>
+      </div>
+      </div>
+    `,
   elOrSelector: document.querySelector("#for"),
   data: {
     showPandavas: true,

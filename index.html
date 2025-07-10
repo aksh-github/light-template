@@ -56,37 +56,13 @@
     <h1>Lightweight Template JS</h1>
     <div id="app"></div>
 
+    <div id="for"></div>
+
     <div class="wc-test">This div is for web comp test</div>
 
     <wc-dev></wc-dev>
 
     <footer>Some footer</footer>
-
-    <!-- Templates -->
-    <template id="my-template">
-      <h2 class="{{headerclass}} list-item">Dynamic Template</h2>
-      <p class="{{msgClass}}">{{ message }}</p>
-
-      <input type="text" data-model="title" />
-      <p class="{{msgClass}}">Title: {{ title }}</p>
-
-      <button data-id="neg">-</button> {{ctr}}
-      <button data-id="pos">+ {{ctr}}</button>
-    </template>
-    <div id="for"></div>
-    <template id="pandav-template">
-      <p>
-        <button data-id="toggle">Toggle Pandavas</button>
-      </p>
-      <div data-if="showPandavas">
-        <ul>
-          <li class="list-item" data-for="p in pandavas">{{p.name}}</li>
-        </ul>
-      </div>
-      <div data-else>
-        <p>No Pandavas to show.</p>
-      </div>
-    </template>
 
     <script type="module" src="/src/index.js"></script>
   </body>

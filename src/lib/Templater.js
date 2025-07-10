@@ -1,6 +1,7 @@
 export default class Templater {
   constructor(options) {
     this.template = options.template;
+
     this.data = options.data;
     // this.mountedElement =
     // this.mount(options.elOrSelector);
@@ -12,8 +13,14 @@ export default class Templater {
   }
 
   compileTemplate() {
-    const templateElement = document.querySelector(this.template);
-    this.templateNode = templateElement.content.cloneNode(true);
+    const templateElement = `${this.template.trim()}`; // Placeholder for template
+    const node = new DOMParser().parseFromString(templateElement, "text/html");
+    if (!node || !node.body) {
+      throw new Error("Invalid template string provided");
+    }
+    // console.log(node.body.children);
+    this.templateNode = node.body.firstChild.cloneNode(true);
+
     this.bindNodes(this.templateNode);
   }
 
@@ -314,4 +321,8 @@ export default class Templater {
 
     if (!_node) this.mountedElement = null;
   }
+}
+
+export function createTemplater(options) {
+  return new Templater(options);
 }
