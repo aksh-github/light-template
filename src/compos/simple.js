@@ -2,6 +2,10 @@ import Templater from "../lib/Templater";
 
 export function Simple() {
   const options = {
+    onMount: (root) => {
+      console.log("Mounted element:", root);
+      // You can perform additional setup here if needed
+    },
     template: `<div>
     <h2 class="{{headerclass}} list-item">Dynamic Template</h2>
       <p class="{{msgClass}}">{{ message }}</p>
@@ -21,6 +25,35 @@ export function Simple() {
       headerclass: "header",
       ctr: 0,
       msgClass: "message",
+    },
+    events: {
+      h2: {
+        click: function () {
+          console.log("Title clicked!");
+        },
+      },
+      input: {
+        input: function (event) {
+          templater.updateData({ title: event.target.value });
+        },
+      },
+      ".message": {
+        mouseover: function () {
+          console.log("Message hovered!");
+        },
+      },
+      "[data-id='neg']": {
+        click: function (event) {
+          console.log("Button clicked!");
+          templater.updateData({ ctr: options.data.ctr - 1 });
+        },
+      },
+      "[data-id='pos']": {
+        click: function (event) {
+          console.log("Button clicked!");
+          templater.updateData({ ctr: options.data.ctr + 1 });
+        },
+      },
     },
   };
 

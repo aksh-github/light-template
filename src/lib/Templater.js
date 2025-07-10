@@ -10,6 +10,11 @@ export default class Templater {
 
     this.compileTemplate();
     this.mount(options.elOrSelector);
+    options?.onMount?.(this.mountedElement);
+    if (options.events) {
+      this.bindEvents(options.events);
+    }
+    this.unMountFn = options?.onUnmount || (() => {});
   }
 
   compileTemplate() {
@@ -308,8 +313,10 @@ export default class Templater {
   }
 
   unmount(_node) {
-    if (!_node) this.removeAllEventListeners();
-
+    if (!_node) {
+      this.unMountFn(this.mountedElement);
+      this.removeAllEventListeners();
+    }
     let node = _node || this.mountedElement;
 
     if (node) {

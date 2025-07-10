@@ -28,28 +28,39 @@ const t = createTemplater({
       { name: "Sahadev" },
     ],
   },
-});
-
-t.bindEvents({
-  // [data-id='toggle']
-  button: {
-    click: function () {
-      console.log("Toggle button clicked!");
-      t.updateData({ showPandavas: false });
-      console.log(t.getRootElement().querySelector("[data-if]"));
-      t.unmount(t.getRootElement().querySelector("[data-if]"));
+  events: {
+    // [data-id='toggle']
+    button: {
+      click: function () {
+        console.log("Toggle button clicked!");
+        t.updateData({ showPandavas: false });
+        console.log(t.getRootElement().querySelector("[data-if]"));
+        t.unmount(t.getRootElement().querySelector("[data-if]"));
+      },
     },
   },
 });
 
-// setTimeout(() => {
-//   // Update data
-//   t.updateData({
-//     pandavas: [
-//       { name: "Karna" },
-//       { name: "Duryodhan" },
-//       { name: "Shakuni" },
-//       { name: "Ashwatthama" },
-//     ],
-//   });
-// }, 7000);
+// t.bindEvents({
+//   // [data-id='toggle']
+//   button: {
+//     click: function () {
+//       console.log("Toggle button clicked!");
+//       t.updateData({ showPandavas: false });
+//       console.log(t.getRootElement().querySelector("[data-if]"));
+//       t.unmount(t.getRootElement().querySelector("[data-if]"));
+//     },
+//   },
+// });
+
+setTimeout(() => {
+  // Update data
+  t.updateData({
+    pandavas: [
+      { name: "Karna" },
+      { name: "Duryodhan" },
+      { name: "Shakuni" },
+      { name: "Ashwatthama" },
+    ],
+  });
+}, 7000);
