@@ -12,9 +12,13 @@ export function Simple() {
 
       <input type="text" data-model="title" />
       <p class="{{msgClass}}">Title: {{ title }}</p>
+      <p>This is static text</p>
 
       <button data-id="neg">-</button> {{ctr}}
       <button data-id="pos">+ {{ctr}}</button>
+      <hr />
+      <MyCard name="{{title}}"></MyCard>
+      <MyCard name="static string"></MyCard>
       </div>`,
     elOrSelector: document
       .querySelector("#app")
@@ -59,35 +63,35 @@ export function Simple() {
 
   const templater = new Templater(options);
 
-  templater.bindEvents({
-    h2: {
-      click: function () {
-        console.log("Title clicked!");
-      },
-    },
-    input: {
-      input: function (event) {
-        templater.updateData({ title: event.target.value });
-      },
-    },
-    ".message": {
-      mouseover: function () {
-        console.log("Message hovered!");
-      },
-    },
-    "[data-id='neg']": {
-      click: function (event) {
-        console.log("Button clicked!");
-        templater.updateData({ ctr: options.data.ctr - 1 });
-      },
-    },
-    "[data-id='pos']": {
-      click: function (event) {
-        console.log("Button clicked!");
-        templater.updateData({ ctr: options.data.ctr + 1 });
-      },
-    },
-  });
+  // templater.bindEvents({
+  //   h2: {
+  //     click: function () {
+  //       console.log("Title clicked!");
+  //     },
+  //   },
+  //   input: {
+  //     input: function (event) {
+  //       templater.updateData({ title: event.target.value });
+  //     },
+  //   },
+  //   ".message": {
+  //     mouseover: function () {
+  //       console.log("Message hovered!");
+  //     },
+  //   },
+  //   "[data-id='neg']": {
+  //     click: function (event) {
+  //       console.log("Button clicked!");
+  //       templater.updateData({ ctr: options.data.ctr - 1 });
+  //     },
+  //   },
+  //   "[data-id='pos']": {
+  //     click: function (event) {
+  //       console.log("Button clicked!");
+  //       templater.updateData({ ctr: options.data.ctr + 1 });
+  //     },
+  //   },
+  // });
 
   setTimeout(() => {
     // Update data

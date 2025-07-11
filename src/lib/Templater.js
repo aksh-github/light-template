@@ -1,3 +1,45 @@
+// --- Component registry ---
+const COMPONENTS = {};
+
+// Register a component
+export function registerComponent(name, componentClass) {
+  COMPONENTS[name.toUpperCase()] = componentClass;
+}
+
+// Helper: parse attributes to props
+function getPropsFromAttributes(node) {
+  const props = {};
+  for (const attr of node.attributes) {
+    props[attr.name] = attr.value;
+  }
+  return props;
+}
+
+// Helper: process custom components in a DOM subtree
+function processComponents(root) {
+  if (!root) return;
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ELEMENT,
+    null,
+    false
+  );
+  let node = walker.currentNode;
+  while (node) {
+    const tag = node.tagName;
+    if (COMPONENTS[tag]) {
+      const props = getPropsFromAttributes(node);
+      const comp = new COMPONENTS[tag](props);
+      const rendered = comp.render();
+      node.replaceWith(rendered);
+      // Restart walker from rendered node
+      walker.currentNode = rendered;
+    }
+    node = walker.nextNode();
+  }
+}
+
+// --- Patch compileTemplate to process components ---
 export default class Templater {
   constructor(options) {
     this.template = options.template;
@@ -23,8 +65,12 @@ export default class Templater {
     if (!node || !node.body) {
       throw new Error("Invalid template string provided");
     }
-    // console.log(node.body.children);
-    this.templateNode = node.body.firstChild.cloneNode(true);
+    // Use the whole body, not just firstChild
+    this.templateNode = node.body;
+    // --- Component processing step ---
+    processComponents(this.templateNode);
+    // Use firstChild for mounting
+    this.templateNode = this.templateNode.firstChild.cloneNode(true);
 
     this.bindNodes(this.templateNode);
   }
@@ -104,7 +150,7 @@ export default class Templater {
               this.boundNodes[binding].push({
                 node: child,
                 type: "text",
-                original: text,
+                original: text?.replaceAll("\n", "").replaceAll("\t", ""),
               });
             });
           }
@@ -205,6 +251,8 @@ export default class Templater {
 
   updateData(newData) {
     Object.assign(this.data, newData);
+
+    console.log(this.boundNodes);
 
     // Update all text and attribute bindings with the latest data
     Object.keys(this.boundNodes).forEach((property) => {
@@ -333,3 +381,23 @@ export default class Templater {
 export function createTemplater(options) {
   return new Templater(options);
 }
+
+// --- Example usage ---
+// Define a component class
+class MyCard {
+  constructor(props) {
+    this.props = props;
+  }
+  render() {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<h2>Hello, ${this.props.name}!</h2>
+    <p>This is a custom card component.</p>`;
+    return div;
+  }
+}
+
+// Register the component
+registerComponent("MyCard", MyCard);
+
+// Now you can use <MyCard name="second" /> in your template string!
