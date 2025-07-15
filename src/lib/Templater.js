@@ -2,8 +2,8 @@
 const COMPONENTS = {};
 
 // Register a component
-export function registerComponent(name, componentClass) {
-  COMPONENTS[name.toUpperCase()] = componentClass;
+export function registerComponent(name, classConfig) {
+  COMPONENTS[name.toUpperCase()] = classConfig;
 }
 
 // Helper: parse attributes to props
@@ -25,15 +25,30 @@ function processComponents(root) {
     false
   );
   let node = walker.currentNode;
+
   while (node) {
     const tag = node.tagName;
-    if (COMPONENTS[tag]) {
+    const config = COMPONENTS[tag];
+    if (config) {
       const props = getPropsFromAttributes(node);
-      const comp = new COMPONENTS[tag](props);
-      const rendered = comp.render();
+      // console.log(config, props);
+      // const comp = new config(props);
+      // Get component config and merge props
+      const componentConfig = typeof config === "function" ? config() : config;
+      const inst = createTemplater({
+        ...componentConfig,
+        data: {
+          ...componentConfig,
+          ...props,
+        },
+      });
+
+      let rendered = inst.templateNode;
+      // console.log(inst);
       node.replaceWith(rendered);
       // Restart walker from rendered node
       walker.currentNode = rendered;
+      rendered = null;
     }
     node = walker.nextNode();
   }
@@ -51,7 +66,9 @@ export default class Templater {
     this._eventListeners = []; // Track event listeners for cleanup
 
     this.compileTemplate();
-    this.mount(options.elOrSelector);
+
+    if (options.elOrSelector) this.mount(options.elOrSelector);
+
     options?.onMount?.(this.mountedElement);
     if (options.events) {
       this.bindEvents(options.events);
@@ -78,27 +95,6 @@ export default class Templater {
   bindNodes(element) {
     if (element.childNodes) {
       Array.from(element.childNodes).forEach((child) => {
-        // --- IF/ELSE HANDLING ---
-        if (child.nodeType === 1 && child.hasAttribute("data-if")) {
-          const expr = child.getAttribute("data-if");
-          const show = this.resolvePath(this.data, expr);
-          const next = child.nextElementSibling;
-          if (show) {
-            child.style.display = "";
-            this.bindNodes(child);
-            if (next && next.hasAttribute("data-else")) {
-              next.style.display = "none";
-            }
-          } else {
-            child.style.display = "none";
-            if (next && next.hasAttribute("data-else")) {
-              next.style.display = "";
-              this.bindNodes(next);
-            }
-          }
-          return; // Skip further processing for this child
-        }
-
         if (child.nodeType === 1 && child.hasAttribute("data-for")) {
           // Handle for loop
           const forExpr = child.getAttribute("data-for"); // e.g. "item in items"
@@ -366,6 +362,7 @@ export default class Templater {
       this.removeAllEventListeners();
     }
     let node = _node || this.mountedElement;
+    this.data = null;
 
     if (node) {
       while (node.firstChild) {
@@ -397,7 +394,34 @@ class MyCard {
   }
 }
 
+// const mc = createTemplater({
+//   template: `<div>
+//   <h2>Hello, {this.props.name}!</h2>
+//     <p>This is a custom card component.</p>
+//     </div>`,
+//   // elOrSelector: document.querySelector("#app"),
+//   onMount: (el) => {
+//     console.log(el);
+//   },
+//   data: {},
+// });
+
 // Register the component
-registerComponent("MyCard", MyCard);
+let ctr = 0;
+registerComponent("MyCard", () => ({
+  template: `<div id="mc-{{id}}">
+  <h2>Hello, {{id}} {{name}}!</h2>
+    <p>This is a custom card component.</p>
+    </div>`,
+  // elOrSelector: document.querySelector("#app"),
+  onMount: (el) => {
+    console.log(el);
+    ctr++;
+  },
+  data: {
+    name: "",
+    id: ctr,
+  },
+}));
 
 // Now you can use <MyCard name="second" /> in your template string!
